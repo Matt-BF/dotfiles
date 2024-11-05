@@ -1,139 +1,125 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# .bashrc
 
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
-
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
-
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
-
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
-
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
+# User specific environment
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
+then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
+export PATH
 
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
+# User specific aliases and functions
+export PATH="$PATH:$HOME/.local/bin"
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-# colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
-
-export BROWSER='/mnt/c/Program Files/Mozilla Firefox/firefox.exe'
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/matt/mambaforge/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+# >>> mamba initialize >>>
+# !! Contents within this block are managed by 'mamba init' !!
+export MAMBA_EXE='/clusterfs/jgi/groups/science/homes/mbfiamenghi/.local/bin/micromamba';
+export MAMBA_ROOT_PREFIX='/clusterfs/jgi/groups/science/homes/mbfiamenghi/.micromamba';
+__mamba_setup="$("$MAMBA_EXE" shell hook --shell bash --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
 if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
+    eval "$__mamba_setup"
 else
-    if [ -f "/home/matt/mambaforge/etc/profile.d/conda.sh" ]; then
-        . "/home/matt/mambaforge/etc/profile.d/conda.sh"
+    alias micromamba="$MAMBA_EXE"  # Fallback on help from mamba activate
+fi
+unset __mamba_setup
+# <<< mamba initialize <<<
+
+alias sqs="squeue -u mbfiamenghi -o \"%.12i %.10P %.18j %.10u %.2t %.8M %.6D %.6C %R\""
+alias mamba=micromamba
+alias conda=micromamba
+#alias wormhole=wormhole-william
+#alias cp=mcp
+alias fsdu="dust -DRrp -z 1G"
+#alias clean_tmp="find /tmp -user mbfiamenghi ! -name 'tmux-*' -exec rm -rf {} \;"
+
+dufolders () {
+    find ./ -maxdepth 1 -type d -print0 | xargs -0 -n1 -P4 du -sh
+}
+
+tv () {
+    first_line=$(head -n1 "$1")
+    if [[ ! $first_line == *$'\t'* && $first_line == *,* ]]; then
+	csvtk pretty $1 | less --header 1
     else
-        export PATH="/home/matt/mambaforge/bin:$PATH"
+	csvtk -t pretty $1 | less --header 1
     fi
-fi
-unset __conda_setup
+}
 
-if [ -f "/home/matt/mambaforge/etc/profile.d/mamba.sh" ]; then
-    . "/home/matt/mambaforge/etc/profile.d/mamba.sh"
-fi
-# <<< conda initialize <<<
 
+seqcnt() {
+    if [[ $(file -bi --mime "$1") =~ "gzip" ]]; then
+        if command -v pigz > /dev/null; then
+            pigz -c -d "${@}" | rg -c "^>"
+        else
+            gzip -c -d "${@}" | rg -c "^>"
+        fi
+    else
+        rg -c "^>" "${@}"
+    fi
+}
+
+tsvtk() {
+    csvtk $1 -t -T "${@:2}"
+}
+
+tar_compress() {
+    if [[ $# -eq 0 ]]; then
+        echo "Usage: ${FUNCNAME[0]} <files> <tarball>"
+        return 1
+    fi
+    local tarball="${!#}"
+    local files="${@:1:$#-1}"
+    if command -v pigz > /dev/null; then
+        tar cf - $files | pigz -7 > $tarball
+    else
+        tar cf - $files | gzip -7 > $tarball
+    fi
+}
+
+tar_extract() {
+    if [ $# -ne 1 ]; then
+        echo "Usage: ${FUNCNAME[0]} <compressed_file>"
+        return 1
+    fi
+    compressed_file=$1
+    filename="${compressed_file%.*}"
+    if [ ! -f "$compressed_file" ]; then
+        echo "Error: $compressed_file not found."
+        return 1
+    fi
+    case "$compressed_file" in
+        *.tar.gz)
+            if command -v pigz >/dev/null; then
+                tar -I pigz -xf "$compressed_file"
+            else
+                tar -xzf "$compressed_file"
+            fi
+        ;;
+        *.tar.xz)
+            tar -xJf "$compressed_file"
+        ;;
+        *.tar.bz2)
+            tar -xjf "$compressed_file"
+        ;;
+        *.tar.zst)
+            tar -I zstd -xf "$compressed_file"
+        ;;
+        *)
+            echo "Error: unsupported file extension."
+            return 1
+        ;;
+    esac
+}
+
+tar_ls() {
+    tar -ztvf $1
+}
+
+export PATH="$PATH:$HOME/.local/bin"
+export PATH="$HOME/.pixi/bin:$PATH"
+eval "$(pixi completion --shell bash)"
+tmux source ~/.config/tmux/tmux.conf
