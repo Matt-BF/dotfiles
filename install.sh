@@ -22,7 +22,7 @@ echo "Installing homebrew"
 
 
 echo "Installing packages..."
-pixi global install brename croc csvlens csvtk diskus dust less ripgrep seqkit sponge zet
+pixi global install brename croc csvlens csvtk diskus dust jless less naf nvim ouch pqrs quarto ripgrep seqkit sponge xan zet
 # Optional: Use package manager
 # sudo apt install zsh git curl ...
 # or for macOS
