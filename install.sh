@@ -2,6 +2,9 @@
 
 set -e
 
+echo "Creating folder for binaries..."
+mkdir -p ~/.local/bin
+
 echo "Setting up symlinks..."
 
 ln -sf ~/dotfiles/bashrc ~/.bashrc
@@ -19,9 +22,14 @@ echo "Installing homebrew"
 
 
 echo "Installing packages..."
+pixi global install brename croc csvlens csvtk diskus dust less ripgrep seqkit sponge zet
 # Optional: Use package manager
 # sudo apt install zsh git curl ...
 # or for macOS
 # brew install zsh git curl ...
+
+echo "Installing binaries..."
+
+
 
 echo "Done!"
