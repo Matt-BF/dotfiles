@@ -1,0 +1,26 @@
+Host github.com
+  AddKeysToAgent yes
+  IdentityFile ~/.ssh/id_ed25519
+
+Host *
+    ServerAliveInterval 30
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_rsa
+
+Host perlmutter
+    HostName perlmutter-p1.nersc.gov
+    User matt_bf
+
+Host dori
+    HostName jgi-interactive02.jgi.lbl.gov
+    User mbfiamenghi
+
+Host bioinfo
+    HostName bioinfo01.ibi.unicamp.br
+    KexAlgorithms +diffie-hellman-group1-sha1
+    HostKeyAlgorithms +ssh-rsa
+    User m.fiamenghi2
+
+Host lawrencium
+    HostName lrc-login.lbl.gov
+    User mbfiamenghi
